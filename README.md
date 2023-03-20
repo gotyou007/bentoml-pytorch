@@ -115,6 +115,7 @@ requests.post(
 ```
 bentoml build
 ```
+```console
 Building BentoML service "pretrained_classification_service:2qgvurwfjojwv6wa" from build context "/Users/li/OMSA/FullStackDL/BentoML/huggingface_deployment".
 Locking PyPI package versions.
 /Users/li/miniconda3/envs/bentoml/lib/python3.9/site-packages/_distutils_hack/__init__.py:33: UserWarning: Setuptools is replacing distutils.
@@ -128,6 +129,7 @@ Locking PyPI package versions.
 ╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░░╚════╝░╚═╝░░░░░╚═╝╚══════╝
 
 Successfully built Bento(tag="pretrained_classification_service:2qgvurwfjojwv6wa").
+```
 
 6. Build docker image: A docker image can be automatically generated from a Bento for production deployment, via the bentoml containerize CLI command
 
@@ -142,7 +144,9 @@ docker run -it --rm -p 3000:3000 pretrained_classification_service:2qgvurwfjojwv
 ```
 bentoml serve pretrained_classification_service:latest --production
 ```
+```console
 2023-03-17T23:12:19-0600 [INFO] [cli] Environ for worker 0: set CPU thread count to 10
 2023-03-17T23:12:19-0600 [INFO] [cli] Prometheus metrics for HTTP BentoServer from "pretrained_classification_service:latest" can be accessed at http://localhost:3000/metrics.
 2023-03-17T23:12:19-0600 [INFO] [cli] Starting production HTTP BentoServer from "pretrained_classification_service:latest" listening on http://0.0.0.0:3000 (Press CTRL+C to quit)
+```
 8. Deploying Bentos in Sagemaker
