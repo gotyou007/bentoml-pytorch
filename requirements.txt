@@ -6,3 +6,4 @@ rich
 numpy
 pillow
 backports.shutil_copytree
+transformer
