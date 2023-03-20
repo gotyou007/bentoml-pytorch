@@ -1,0 +1,11 @@
+api_version: v1
+name: pretrained_classification
+operator:
+  name: aws-sagemaker
+template: terraform
+spec:
+  region: us-east-2
+  instance_type: ml.t2.medium
+  initial_instance_count: 1
+  timeout: 60
+  initial_sampling_percentage: 1
