@@ -1,8 +1,7 @@
-# Deploy a pretrained/Fine-tuned hateBERT model in Bentoml
+# Deploy a pretrained/Fine-tuned hateBERT model in AWS Sagemaker with BentoML
 
-`bentoml.picklable_model` represents a generic model type in BentoML, that uses
-`cloudpickle` for model serialization under the hood. Most pure python code based
-ML model implementation should work with `bentoml.picklable_model` out-of-the-box.
+`Transformers` is a library that helps download and fine-tune popular pretrained models for common machine learning tasks. `BentoML` provides native support for serving and deploying models trained from Transformers. BentoML requires Transformers version 4 or above
+
 
 0. Install dependencies:
 
@@ -10,10 +9,33 @@ ML model implementation should work with `bentoml.picklable_model` out-of-the-bo
 pip install -r ./requirements.txt
 ```
 
-1. Train a custom LDA model:
+1. Serving a Fined-tuned Model:
 
-```bash
-python ./train.py
+```python
+%%writefile service.py
+import bentoml
+
+from bentoml.io import Text, JSON
+from transformers import pipeline
+
+class PretrainedModelRunnable(bentoml.Runnable):
+    SUPPORTED_RESOURCES = ("cpu",)
+    SUPPORTS_CPU_MULTI_THREADING = True
+
+    def __init__(self):
+        self.classifier = pipeline(task="text-classification", model='GroNLP/hateBERT')
+
+    @bentoml.Runnable.method(batchable=False)
+    def __call__(self, input_text):
+        return self.classifier(input_text)
+
+runner = bentoml.Runner(PretrainedModelRunnable, name="pretrained_unmasker")
+
+svc = bentoml.Service('pretrained_classification_service', runners=[runner])
+
+@svc.api(input=Text(), output=JSON())
+async def detectViolence(input_series: str) -> list:
+    return await runner.async_run(input_series)
 ```
 
 2. Run the service:
