@@ -150,3 +150,11 @@ bentoml serve pretrained_classification_service:latest --production
 2023-03-17T23:12:19-0600 [INFO] [cli] Starting production HTTP BentoServer from "pretrained_classification_service:latest" listening on http://0.0.0.0:3000 (Press CTRL+C to quit)
 ```
 8. Deploying Bentos in Sagemaker
+ **Prerequisites:**
+    - Terraform - [Terraform](https://www.terraform.io/) is a tool for building, configuring, and managing infrastructure.
+    - AWS CLI - installed and configured with an AWS account with permission to Sagemaker, Lambda and ECR
+configure AWS CLI and login docker
+```
+aws configure
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin account.dkr.ecr.us-east-1.amazonaws.com
+```
