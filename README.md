@@ -1,6 +1,4 @@
-# Custom LDA classifier model via bentoml.picklable_model
-
-This example is based on https://github.com/eriklindernoren/ML-From-Scratch
+# Deploy a pretrained/Fine-tuned hateBERT model in Bentoml
 
 `bentoml.picklable_model` represents a generic model type in BentoML, that uses
 `cloudpickle` for model serialization under the hood. Most pure python code based
