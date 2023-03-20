@@ -157,4 +157,68 @@ configure AWS CLI and login docker
 ```
 aws configure
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin account.dkr.ecr.us-east-1.amazonaws.com
+#initiate bentoctl
+pip install bentoctl #if you haven't install it
+bentoctl operator install aws-sagemaker #if you haven't install it
+bentoctl init
+```
+```console
+Welcome! You are now in interactive mode.
+
+This mode will help you setup the deployment_config.yaml file required for
+deployment. Fill out the appropriate values for the fields.
+
+(deployment config will be saved to: ./deployment_config.yaml)
+
+api_version: v1
+name: pretrained_classification
+operator:
+    name: aws-sagemaker
+template: terraform
+spec:
+    region: us-east-2
+    instance_type: ml.t2.medium
+    initial_instance_count: 1
+    timeout: 60
+    enable_data_capture: False
+    destination_s3_uri:
+    initial_sampling_percentage: 1
+filename for deployment_config [deployment_config.yaml]:
+deployment config generated to: deployment_config.yaml
+✨ generated template files.
+  - ./main.tf
+  - ./bentoctl.tfvars
+  ```
+This will run the bentoctl generate command for you and will generate the main.tf terraform file, which specifies the resources to be created and the bentoctl.tfvars file which contains the values for the variables used in the main.tf file.
+
+**Build and push AWS sagemaker compatible docker image to the AWS ECR repository.**
+```
+bentoctl build -b pytorch_mnist_service:latest -f deployment_config.yaml
+```
+**Apply Deployment with Terraform**
+Initialize terraform project. This installs the AWS provider and sets up the terraform folders.
+```
+terraform init
+#Apply terraform project to create Sagemaker deployment
+terraform apply -var-file=bentoctl.tfvars -auto-approve
+```
+```consele
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+ecr_image_tag = "`awsaccount`.dkr.ecr.us-east-2.amazonaws.com/pretrained_classification:sfx3dagmpogmockr"
+
+endpoint = "https://zwq6dqnty2.execute-api.us-east-2.amazonaws.com/"
+```
+Test deployed endpoint
+```
+URL=$(terraform output -json | jq -r .endpoint.value)classify
+curl -i \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data 'input' \
+  $URL
+  ```
+Last but not least, do not forget to **Delete deployment Use the bentoctl destroy command to remove the registry and the deployment**
+```
+bentoctl destroy -f deployment_config.yaml
 ```
