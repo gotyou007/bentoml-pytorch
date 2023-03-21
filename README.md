@@ -195,6 +195,11 @@ This will run the bentoctl generate command for you and will generate the main.t
 ```
 bentoctl build -b pytorch_mnist_service:latest -f deployment_config.yaml
 ```
+```console
+🚀 Image pushed!
+✨ generated template files.
+  - ./bentoctl.tfvars
+```
 **Apply Deployment with Terraform**
 Initialize terraform project. This installs the AWS provider and sets up the terraform folders.
 ```
