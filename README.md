@@ -29,7 +29,7 @@ class PretrainedModelRunnable(bentoml.Runnable):
     def __call__(self, input_text):
         return self.classifier(input_text)
 
-runner = bentoml.Runner(PretrainedModelRunnable, name="pretrained_unmasker")
+runner = bentoml.Runner(PretrainedModelRunnable, name="pretrained_classifier")
 
 svc = bentoml.Service('pretrained_classification_service', runners=[runner])
 
